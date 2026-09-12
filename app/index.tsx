@@ -1,4 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
+import { Button, Typography } from 'heroui-native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   type LayoutChangeEvent,
@@ -13,6 +14,8 @@ import { ConcentrationSlider } from '@/components/ConcentrationSlider';
 import { ARTICLES } from '@/lib/articles';
 import { useConcentrationStore } from '@/lib/concentration';
 
+const STATUS_BAR_STYLE = 'dark' as const;
+
 export default function ReaderScreen() {
   const level = useConcentrationStore((state) => state.level);
   const setLevel = useConcentrationStore((state) => state.setLevel);
@@ -22,10 +25,12 @@ export default function ReaderScreen() {
   const offsetsRef = useRef<number[]>([]);
   const indexRef = useRef(0);
   const levelRef = useRef(level);
+  const focusModeRef = useRef(false);
 
   const [viewport, setViewport] = useState(0);
   const [heights, setHeights] = useState<number[]>(() => ARTICLES.map(() => 0));
   const [index, setIndex] = useState(0);
+  const [isFocusMode, setIsFocusMode] = useState(false);
 
   useEffect(() => {
     void restore();
@@ -49,16 +54,17 @@ export default function ReaderScreen() {
   // than the screen, so they scroll freely instead of snapping back.
   const snapsToStories = measured && heights.every((height) => height <= viewport + 1);
 
-  // Keep the reader on the same story when the summarisation level changes.
+  // Keep the reader on the same story when the text level or reading layout changes.
   useEffect(() => {
-    if (levelRef.current === level) return undefined;
+    if (levelRef.current === level && focusModeRef.current === isFocusMode) return undefined;
     levelRef.current = level;
+    focusModeRef.current = isFocusMode;
     const target = indexRef.current;
     const timer = setTimeout(() => {
       scrollRef.current?.scrollTo({ y: offsetsRef.current[target] ?? 0, animated: false });
     }, 60);
     return () => clearTimeout(timer);
-  }, [level]);
+  }, [isFocusMode, level]);
 
   const handleViewportLayout = useCallback((event: LayoutChangeEvent) => {
     setViewport(event.nativeEvent.layout.height);
@@ -87,8 +93,46 @@ export default function ReaderScreen() {
 
   return (
     <View className="bg-background flex-1">
-      <StatusBar style="dark" />
+      <StatusBar style={STATUS_BAR_STYLE} />
       <View className="pt-safe flex-1">
+        <View className="min-h-14 flex-row items-center px-7 py-2">
+          {isFocusMode ? (
+            <Button
+              size="sm"
+              variant="ghost"
+              onPress={() => setIsFocusMode(false)}
+              accessibilityLabel="Exit focus mode"
+              className="ml-auto"
+            >
+              <Button.Label>Exit focus</Button.Label>
+            </Button>
+          ) : (
+            <>
+              <View
+                accessibilityLabel="News Pilot logo"
+                className="border-border mr-3 size-8 items-center justify-center rounded-lg border"
+              >
+                <Typography type="body-xs" weight="semibold" className="text-foreground">
+                  NP
+                </Typography>
+              </View>
+              <Typography weight="semibold" className="text-foreground text-lg tracking-tight">
+                News Pilot
+              </Typography>
+              <Button
+                size="sm"
+                variant="tertiary"
+                onPress={() => setIsFocusMode(true)}
+                accessibilityLabel="Enter focus mode"
+                accessibilityHint="Hides the app controls and branding"
+                className="ml-auto"
+              >
+                <Button.Label>Focus</Button.Label>
+              </Button>
+            </>
+          )}
+        </View>
+
         <ScrollView
           ref={scrollRef}
           onLayout={handleViewportLayout}
@@ -112,11 +156,13 @@ export default function ReaderScreen() {
           ))}
         </ScrollView>
       </View>
-      <ConcentrationSlider
-        level={level}
-        onLevelChange={setLevel}
-        positionLabel={`${index + 1} of ${ARTICLES.length}`}
-      />
+      {!isFocusMode && (
+        <ConcentrationSlider
+          level={level}
+          onLevelChange={setLevel}
+          positionLabel={`${index + 1} of ${ARTICLES.length}`}
+        />
+      )}
     </View>
   );
 }
