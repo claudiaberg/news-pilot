@@ -30,7 +30,6 @@ export default function ReaderScreen() {
 
   const [viewport, setViewport] = useState(0);
   const [heights, setHeights] = useState<number[]>(() => ARTICLES.map(() => 0));
-  const [index, setIndex] = useState(0);
   const [isFocusMode, setIsFocusMode] = useState(false);
 
   useEffect(() => {
@@ -89,7 +88,6 @@ export default function ReaderScreen() {
     }
     if (nextIndex === indexRef.current) return;
     indexRef.current = nextIndex;
-    setIndex(nextIndex);
   }, []);
 
   return (
@@ -156,13 +154,7 @@ export default function ReaderScreen() {
           ))}
         </ScrollView>
       </View>
-      {!isFocusMode && (
-        <ConcentrationSlider
-          level={level}
-          onLevelChange={setLevel}
-          positionLabel={`${index + 1} of ${ARTICLES.length}`}
-        />
-      )}
+      {!isFocusMode && <ConcentrationSlider level={level} onLevelChange={setLevel} />}
     </View>
   );
 }

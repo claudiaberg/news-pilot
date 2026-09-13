@@ -13,11 +13,9 @@ import {
 type Props = {
   level: ConcentrationLevel;
   onLevelChange: (level: ConcentrationLevel) => void;
-  /** Quiet orientation hint, e.g. "3 of 7". */
-  positionLabel: string;
 };
 
-export function ConcentrationSlider({ level, onLevelChange, positionLabel }: Props) {
+export function ConcentrationSlider({ level, onLevelChange }: Props) {
   const handleChange = (value: number | number[]) => {
     const raw = Array.isArray(value) ? (value[0] ?? MIN_LEVEL) : value;
     const next = clampLevel(raw);
@@ -29,16 +27,7 @@ export function ConcentrationSlider({ level, onLevelChange, positionLabel }: Pro
   };
 
   return (
-    <View className="border-border bg-background pb-safe-offset-6 border-t px-7 pt-5">
-      <View className="mb-4 flex-row items-center justify-between">
-        <Typography weight="medium" className="text-foreground">
-          {LEVEL_META[level].label}
-        </Typography>
-        <Typography type="body-xs" color="muted">
-          {positionLabel}
-        </Typography>
-      </View>
-
+    <View className="border-border bg-background pb-safe-offset-3 border-t px-7 pt-4">
       <Slider
         value={level}
         minValue={MIN_LEVEL}
