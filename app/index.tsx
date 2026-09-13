@@ -123,7 +123,7 @@ export default function ReaderScreen() {
                 onPress={() => setIsFocusMode(true)}
                 accessibilityLabel="Enter focus mode"
                 accessibilityHint="Hides the app controls and branding"
-                className="ml-auto"
+                className="ml-auto size-14 rounded-full p-0"
               >
                 <Button.Label>Focus</Button.Label>
               </Button>
