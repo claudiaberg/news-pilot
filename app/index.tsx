@@ -2,11 +2,15 @@ import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
 import { ListGroup, Separator, Typography } from 'heroui-native';
 import { Image, ScrollView, View } from 'react-native';
+import { SvgUri } from 'react-native-svg';
 
 import { ARTICLES } from '@/lib/articles';
 
 const STATUS_BAR_STYLE = 'dark' as const;
 const PAGE_HORIZONTAL_PADDING = 28;
+const WORDMARK_WIDTH = 136;
+const WORDMARK_ASPECT_RATIO = 790 / 160;
+const WORDMARK_URI = Image.resolveAssetSource(require('@/assets/news-pilot-wordmark.svg')).uri;
 
 export default function HomeScreen() {
   return (
@@ -21,18 +25,12 @@ export default function HomeScreen() {
             accessible
             accessibilityRole="image"
             accessibilityLabel="News Pilot logo"
-            className="h-8 overflow-hidden"
-            style={{ width: 136 }}
+            style={{
+              width: WORDMARK_WIDTH,
+              height: WORDMARK_WIDTH / WORDMARK_ASPECT_RATIO,
+            }}
           >
-            <Image
-              source={require('@/assets/news-pilot-wordmark.png')}
-              resizeMode="stretch"
-              style={{
-                width: 144,
-                height: 72,
-                transform: [{ translateX: -7 }, { translateY: -2 }],
-              }}
-            />
+            <SvgUri width="100%" height="100%" uri={WORDMARK_URI} />
           </View>
         </View>
 
