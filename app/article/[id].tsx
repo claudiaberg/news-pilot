@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Button, Typography } from 'heroui-native';
 import { useEffect, useState } from 'react';
-import { Image, type LayoutChangeEvent, ScrollView, View } from 'react-native';
+import { Image, ScrollView, View } from 'react-native';
 
 import { ArticleView, getVisibleArticleText } from '@/components/ArticleView';
 import { ConcentrationSlider } from '@/components/ConcentrationSlider';
@@ -67,7 +67,6 @@ export default function ArticleScreen() {
   const setLevel = useConcentrationStore((state) => state.setLevel);
   const restore = useConcentrationStore((state) => state.restore);
   const [isFocusMode, setIsFocusMode] = useState(false);
-  const [viewportHeight, setViewportHeight] = useState(0);
 
   useEffect(() => {
     void restore();
@@ -76,10 +75,6 @@ export default function ArticleScreen() {
   const handleNextArticle = () => {
     if (!nextArticle) return;
     router.push({ pathname: '/article/[id]', params: { id: nextArticle.id } });
-  };
-
-  const handleViewportLayout = (event: LayoutChangeEvent) => {
-    setViewportHeight(event.nativeEvent.layout.height);
   };
 
   if (!article) {
@@ -145,15 +140,11 @@ export default function ArticleScreen() {
           )}
         </View>
 
-        <ScrollView
-          onLayout={handleViewportLayout}
-          showsVerticalScrollIndicator={false}
-          className="flex-1"
-        >
+        <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
           <ArticleView
             article={article}
             level={level}
-            minHeight={viewportHeight}
+            minHeight={0}
             showDivider={false}
             onMeasure={() => {}}
           />

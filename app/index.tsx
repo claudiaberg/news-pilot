@@ -6,7 +6,7 @@ import { Image, ScrollView, View } from 'react-native';
 import { ARTICLES } from '@/lib/articles';
 
 const STATUS_BAR_STYLE = 'dark' as const;
-const PAGE_HORIZONTAL_PADDING = 15;
+const PAGE_HORIZONTAL_PADDING = 28;
 
 export default function HomeScreen() {
   return (

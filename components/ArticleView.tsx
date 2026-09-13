@@ -53,7 +53,7 @@ export function ArticleView({ article, level, minHeight, showDivider, onMeasure 
     <View
       onLayout={handleLayout}
       style={minHeight > 0 ? { minHeight } : undefined}
-      className={cn('px-7 pt-10 pb-16', showDivider && 'border-border border-t')}
+      className={cn('px-7 pt-10 pb-6', showDivider && 'border-border border-t')}
     >
       <View className="mb-5 flex-row items-center justify-between">
         <Typography type="body-xs" color="muted" className="tracking-[2px] uppercase">
