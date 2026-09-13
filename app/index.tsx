@@ -6,13 +6,17 @@ import { Image, ScrollView, View } from 'react-native';
 import { ARTICLES } from '@/lib/articles';
 
 const STATUS_BAR_STYLE = 'dark' as const;
+const PAGE_HORIZONTAL_PADDING = 15;
 
 export default function HomeScreen() {
   return (
     <View className="bg-background flex-1">
       <StatusBar style={STATUS_BAR_STYLE} />
       <View className="pt-safe flex-1">
-        <View className="min-h-14 flex-row items-center px-[15px] py-2">
+        <View
+          className="min-h-14 flex-row items-center py-2"
+          style={{ paddingHorizontal: PAGE_HORIZONTAL_PADDING }}
+        >
           <Image
             source={require('@/assets/news-pilot-logo.png')}
             accessibilityLabel="News Pilot logo"
@@ -27,7 +31,8 @@ export default function HomeScreen() {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerClassName="px-[15px] pt-8 pb-safe-offset-8"
+          contentContainerClassName="pt-8 pb-safe-offset-8"
+          contentContainerStyle={{ paddingHorizontal: PAGE_HORIZONTAL_PADDING }}
         >
           <Typography type="h2" weight="semibold" className="text-foreground mb-8">
             News
@@ -43,7 +48,8 @@ export default function HomeScreen() {
                   }
                   accessibilityLabel={`${article.section}: ${article.headline}`}
                   accessibilityHint="Opens the article"
-                  className="px-0 py-6"
+                  className="py-6"
+                  style={{ paddingHorizontal: 0 }}
                 >
                   <ListGroup.ItemContent className="gap-2">
                     <ListGroup.ItemDescription className="text-muted text-xs tracking-[2px] uppercase">
