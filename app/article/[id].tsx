@@ -1,20 +1,68 @@
+import * as Speech from 'expo-speech';
 import { StatusBar } from 'expo-status-bar';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Button, Typography } from 'heroui-native';
 import { useEffect, useState } from 'react';
 import { Image, type LayoutChangeEvent, ScrollView, View } from 'react-native';
 
-import { ArticleView } from '@/components/ArticleView';
+import { ArticleView, getVisibleArticleText } from '@/components/ArticleView';
 import { ConcentrationSlider } from '@/components/ConcentrationSlider';
-import { ARTICLES } from '@/lib/articles';
-import { useConcentrationStore } from '@/lib/concentration';
+import { ARTICLES, type Article } from '@/lib/articles';
+import { type ConcentrationLevel, useConcentrationStore } from '@/lib/concentration';
 import { goBackOrReplace } from '@/lib/navigation';
 
 const STATUS_BAR_STYLE = 'dark' as const;
 
+type SpeechButtonProps = {
+  article: Article;
+  level: ConcentrationLevel;
+};
+
+function SpeechButton({ article, level }: SpeechButtonProps) {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      void Speech.stop();
+    };
+  }, []);
+
+  const handleSpeech = async () => {
+    if (isSpeaking) {
+      await Speech.stop();
+      setIsSpeaking(false);
+      return;
+    }
+
+    const spokenText = [article.headline, ...getVisibleArticleText(article, level)].join('\n\n');
+    setIsSpeaking(true);
+    Speech.speak(spokenText, {
+      language: 'de-DE',
+      onDone: () => setIsSpeaking(false),
+      onStopped: () => setIsSpeaking(false),
+      onError: () => setIsSpeaking(false),
+    });
+  };
+
+  return (
+    <Button
+      size="sm"
+      variant="ghost"
+      onPress={() => void handleSpeech()}
+      accessibilityLabel={isSpeaking ? 'Stop reading article' : 'Read article aloud'}
+      className="mr-1 rounded-full"
+    >
+      <Button.Label>{isSpeaking ? 'Stop' : 'Play'}</Button.Label>
+    </Button>
+  );
+}
+
 export default function ArticleScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const article = ARTICLES.find((item) => item.id === id);
+  const router = useRouter();
+  const articleIndex = ARTICLES.findIndex((item) => item.id === id);
+  const article = articleIndex >= 0 ? ARTICLES[articleIndex] : undefined;
+  const nextArticle = articleIndex >= 0 ? ARTICLES[articleIndex + 1] : undefined;
   const level = useConcentrationStore((state) => state.level);
   const setLevel = useConcentrationStore((state) => state.setLevel);
   const restore = useConcentrationStore((state) => state.restore);
@@ -24,6 +72,11 @@ export default function ArticleScreen() {
   useEffect(() => {
     void restore();
   }, [restore]);
+
+  const handleNextArticle = () => {
+    if (!nextArticle) return;
+    router.push({ pathname: '/article/[id]', params: { id: nextArticle.id } });
+  };
 
   const handleViewportLayout = (event: LayoutChangeEvent) => {
     setViewportHeight(event.nativeEvent.layout.height);
@@ -63,19 +116,11 @@ export default function ArticleScreen() {
             </Button>
           ) : (
             <>
-              <Button
-                size="sm"
-                variant="ghost"
-                onPress={() => goBackOrReplace('/')}
-                accessibilityLabel="Back to headlines"
-              >
-                <Button.Label>Back</Button.Label>
-              </Button>
               <Image
                 source={require('@/assets/news-pilot-logo.png')}
                 accessibilityLabel="News Pilot logo"
                 resizeMode="contain"
-                className="mr-2 ml-2"
+                className="mr-2"
                 style={{ width: 28, height: 28 }}
               />
               <Typography
@@ -85,6 +130,7 @@ export default function ArticleScreen() {
               >
                 News Pilot
               </Typography>
+              <SpeechButton key={`${article.id}-${level}`} article={article} level={level} />
               <Button
                 size="sm"
                 variant="tertiary"
@@ -111,6 +157,30 @@ export default function ArticleScreen() {
             showDivider={false}
             onMeasure={() => {}}
           />
+          {!isFocusMode && (
+            <View className="px-7 pb-10">
+              <View className="border-border flex-row items-center justify-between border-t pt-4">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onPress={() => goBackOrReplace('/')}
+                  accessibilityLabel="Back to news"
+                >
+                  <Button.Label>Back</Button.Label>
+                </Button>
+                {nextArticle && (
+                  <Button
+                    size="sm"
+                    variant="tertiary"
+                    onPress={handleNextArticle}
+                    accessibilityLabel={`Next article: ${nextArticle.headline}`}
+                  >
+                    <Button.Label>Next article</Button.Label>
+                  </Button>
+                )}
+              </View>
+            </View>
+          )}
         </ScrollView>
       </View>
       {!isFocusMode && <ConcentrationSlider level={level} onLevelChange={setLevel} />}

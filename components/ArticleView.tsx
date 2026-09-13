@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 const WORDS_PER_MINUTE = 200;
 
-function visibleText(article: Article, level: ConcentrationLevel): string[] {
+export function getVisibleArticleText(article: Article, level: ConcentrationLevel): string[] {
   switch (level) {
     case 0:
       return [article.gist];
@@ -43,7 +43,7 @@ type Props = {
 };
 
 export function ArticleView({ article, level, minHeight, showDivider, onMeasure }: Props) {
-  const parts = visibleText(article, level);
+  const parts = getVisibleArticleText(article, level);
 
   const handleLayout = (event: LayoutChangeEvent) => {
     onMeasure(event.nativeEvent.layout.height);
