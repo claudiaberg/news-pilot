@@ -12,6 +12,8 @@ import { type ConcentrationLevel, useConcentrationStore } from '@/lib/concentrat
 import { goBackOrReplace } from '@/lib/navigation';
 
 const STATUS_BAR_STYLE = 'dark' as const;
+const WORDMARK_WIDTH = 136;
+const WORDMARK_ASPECT_RATIO = 790 / 160;
 
 type SpeechButtonProps = {
   article: Article;
@@ -112,19 +114,15 @@ export default function ArticleScreen() {
           ) : (
             <>
               <Image
-                source={require('@/assets/news-pilot-logo.png')}
+                source={require('@/assets/news-pilot-wordmark.png')}
                 accessibilityLabel="News Pilot logo"
                 resizeMode="contain"
-                className="mr-2"
-                style={{ width: 28, height: 28 }}
+                style={{
+                  width: WORDMARK_WIDTH,
+                  height: WORDMARK_WIDTH / WORDMARK_ASPECT_RATIO,
+                }}
               />
-              <Typography
-                weight="semibold"
-                numberOfLines={1}
-                className="text-foreground flex-1 text-base tracking-tight"
-              >
-                News Pilot
-              </Typography>
+              <View className="flex-1" />
               <SpeechButton key={`${article.id}-${level}`} article={article} level={level} />
               <Button
                 size="sm"
