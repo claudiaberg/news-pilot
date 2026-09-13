@@ -12,7 +12,7 @@ export default function HomeScreen() {
     <View className="bg-background flex-1">
       <StatusBar style={STATUS_BAR_STYLE} />
       <View className="pt-safe flex-1">
-        <View className="min-h-14 flex-row items-center px-7 py-2">
+        <View className="min-h-14 flex-row items-center px-3 py-2">
           <Image
             source={require('@/assets/news-pilot-logo.png')}
             accessibilityLabel="News Pilot logo"
@@ -27,10 +27,10 @@ export default function HomeScreen() {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerClassName="px-7 pt-8 pb-safe-offset-8"
+          contentContainerClassName="px-3 pt-8 pb-safe-offset-8"
         >
           <Typography type="h2" weight="semibold" className="text-foreground mb-8">
-            Headlines
+            News
           </Typography>
 
           <ListGroup className="bg-background border-0">
