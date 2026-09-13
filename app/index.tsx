@@ -17,16 +17,23 @@ export default function HomeScreen() {
           className="min-h-14 flex-row items-center py-2"
           style={{ paddingHorizontal: PAGE_HORIZONTAL_PADDING }}
         >
-          <Image
-            source={require('@/assets/news-pilot-logo.png')}
+          <View
+            accessible
+            accessibilityRole="image"
             accessibilityLabel="News Pilot logo"
-            resizeMode="contain"
-            className="mr-3"
-            style={{ width: 32, height: 32 }}
-          />
-          <Typography weight="semibold" className="text-foreground text-lg tracking-tight">
-            News Pilot
-          </Typography>
+            className="h-8 overflow-hidden"
+            style={{ width: 136 }}
+          >
+            <Image
+              source={require('@/assets/news-pilot-wordmark.png')}
+              resizeMode="stretch"
+              style={{
+                width: 144,
+                height: 72,
+                transform: [{ translateX: -7 }, { translateY: -2 }],
+              }}
+            />
+          </View>
         </View>
 
         <ScrollView
