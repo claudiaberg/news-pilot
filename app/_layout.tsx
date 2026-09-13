@@ -143,6 +143,7 @@ export default function RootLayout() {
       <HeroUINativeProvider>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" options={{ title: 'News Pilot' }} />
+          <Stack.Screen name="article/[id]" />
         </Stack>
         <InstallPrompt />
       </HeroUINativeProvider>
