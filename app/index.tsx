@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Button, Typography } from 'heroui-native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Image,
   type LayoutChangeEvent,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
@@ -108,14 +109,13 @@ export default function ReaderScreen() {
             </Button>
           ) : (
             <>
-              <View
+              <Image
+                source={require('@/assets/news-pilot-logo.png')}
                 accessibilityLabel="News Pilot logo"
-                className="border-border mr-3 size-8 items-center justify-center rounded-lg border"
-              >
-                <Typography type="body-xs" weight="semibold" className="text-foreground">
-                  NP
-                </Typography>
-              </View>
+                resizeMode="contain"
+                className="mr-3"
+                style={{ width: 32, height: 32 }}
+              />
               <Typography weight="semibold" className="text-foreground text-lg tracking-tight">
                 News Pilot
               </Typography>
